@@ -2,7 +2,11 @@ import React from 'react'
 
 const CreatePost = () => {
   return (
-    <div>CreatePost</div>
+    <div>
+      <h2>
+        CreatePost
+      </h2>
+    </div>
   )
 }
 
