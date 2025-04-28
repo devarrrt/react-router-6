@@ -21,9 +21,15 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
+        {/* here we use a layout that uses '/' as a constant character in the address bar. this means that we can omit the '/' from here on */}
         <Route path='/' element={<Layout />}>
           <Route index element={<MainPage />} />
-          <Route path="about" element={<AboutPage />} />
+
+          <Route path="about/*" element={<AboutPage />}>
+            <Route path="contacts" element={<p>Our contact</p>} />
+            <Route path="team" element={<p>Our team</p>} />
+          </Route>
+
           <Route path="about-us" element={<Navigate to='/about' replace />} />
           <Route path="post" element={<BlogPage />} />
           <Route path="posts/:id" element={<PostPage />} />
