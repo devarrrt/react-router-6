@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useLoaderData, useSearchParams, defer, Await } from 'react-router-dom'
 import { BlogFilter } from '../components/BlogFilter'
+import { Suspense } from 'react'
 
 const BlogPage = () => {
-  const [posts, setPosts] = useState([])
+  const { posts } = useLoaderData() // this is a hook that will give us the result of the request execution
 
   // useSearchParams - instance of class URLSearchParams
   const [searchParams, setSearchParams] = useSearchParams()
@@ -14,11 +14,12 @@ const BlogPage = () => {
   //if there is latest in the search line, then we take records from 80, if not, then from 1
   const startsFrom = latest ? 80 : 1
 
-  useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/posts')
-      .then(res => res.json())
-      .then(data => setPosts(data))
-  }, [])
+  //we can get rid of this code when using blogLoader function
+  // useEffect(() => {
+  // fetch('https://jsonplaceholder.typicode.com/posts')
+  //   .then(res => res.json())
+  //   .then(data => setPosts(data))
+  // }, [])
 
   return (
     <div>
@@ -27,18 +28,38 @@ const BlogPage = () => {
       </h1>
       <BlogFilter setSearchParams={setSearchParams} postQuery={postQuery} latest={latest} />
       <Link to="/posts/new" style={{ margin: '1rem 0', display: 'inline-block' }}>Add new post</Link>
-      {
-        posts
-          //filter posts if they contain title = postQuery
-          .filter(post => post.title?.includes(postQuery) && post.id >= startsFrom)
-          .map(post => (
-            <Link key={post?.id} to={`/posts/${post?.id}`}>
-              <li>{post?.title}</li>
-            </Link>
-          ))
-      }
+
+      <Suspense fallback={<h2> Loading...</h2>}> 
+        <Await resolve={posts}>
+          {(result) => (
+            <>
+              {
+                result
+                  //filter posts if they contain title = postQuery
+                  .filter(post => post.title?.includes(postQuery) && post.id >= startsFrom)
+                  .map(post => (
+                    <Link key={post?.id} to={`/posts/${post?.id}`}>
+                      <li>{post?.title}</li>
+                    </Link>
+                  ))
+              }
+            </>
+          )}
+        </Await>
+      </Suspense>
     </div>
   )
 }
 
-export { BlogPage }
+async function getPosts() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+  return res.json()
+}
+
+const blogLoader = async ({ request, params }) => {
+  return defer({
+    posts: getPosts() //thanks to defer we have the ability to wait until the data is received
+  })
+}
+
+export { BlogPage, blogLoader }

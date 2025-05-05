@@ -7,8 +7,8 @@ import './index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    {/* <BrowserRouter> if we want to use the ability to preload data using routing, we have to get rid of BrowserRouter */}
+    <App />
+    {/* </BrowserRouter> */}
   </StrictMode>,
 )
