@@ -20,7 +20,7 @@ const Layout = () => {
         {/* <NavLink to='/'> Home </CustomLink> */}
 
         <CustomLink to='/'> Home </CustomLink>
-        <CustomLink to='/post'> Blog </CustomLink>
+        <CustomLink to='/posts'> Blog </CustomLink>
         <CustomLink to='/about'> About </CustomLink>
         {
           user && <button onClick={logout}>

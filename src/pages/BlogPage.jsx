@@ -1,4 +1,4 @@
-import { Link, useLoaderData, useSearchParams, defer, Await } from 'react-router-dom'
+import { Link, useLoaderData, useSearchParams, defer, Await, json } from 'react-router-dom'
 import { BlogFilter } from '../components/BlogFilter'
 import { Suspense } from 'react'
 
@@ -29,7 +29,7 @@ const BlogPage = () => {
       <BlogFilter setSearchParams={setSearchParams} postQuery={postQuery} latest={latest} />
       <Link to="/posts/new" style={{ margin: '1rem 0', display: 'inline-block' }}>Add new post</Link>
 
-      <Suspense fallback={<h2> Loading...</h2>}> 
+      <Suspense fallback={<h2> Loading...</h2>}>
         <Await resolve={posts}>
           {(result) => (
             <>
@@ -52,13 +52,34 @@ const BlogPage = () => {
 }
 
 async function getPosts() {
-  const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+  // const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+  //for error
+  const res = await fetch('https://jsonplaceholder.typicode.com/postssss')
+
+  //we can check errors like this
+  // if (!res.ok) {
+  //   throw new Response('', { status: res.status, statusText: 'Not found' })
+  // }
   return res.json()
 }
 
 const blogLoader = async ({ request, params }) => {
+
+  //and we can check errors like this
+  const posts = getPosts()
+
+  if (!posts.length) {
+    throw json({
+      message: 'Sorry, not found',
+      reason: 'Wrong url'
+    }, {
+      status: 404
+    })
+  }
+
+
   return defer({
-    posts: getPosts() //thanks to defer we have the ability to wait until the data is received
+    posts //thanks to defer we have the ability to wait until the data is received
   })
 }
 

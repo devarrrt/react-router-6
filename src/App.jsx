@@ -8,6 +8,7 @@ import { postLoader, PostPage } from './pages/PostPage'
 import { CreatePost } from './pages/CreatePost'
 import { EditPost } from './pages/EditPost'
 import { LoginPage } from './pages/LoginPage'
+import { ErrorPage } from './pages/ErrorPage'
 
 import { Layout } from './components/Layout'
 
@@ -28,7 +29,8 @@ const router = createBrowserRouter(createRoutesFromElements(
     </Route>
 
     <Route path="about-us" element={<Navigate to='/about' replace />} />
-    <Route path="post" element={<BlogPage />} loader={blogLoader}/> 
+    {/* errorElement allows us to catch errors related to routing and data preloading. This prop does not exclude the use of ErrorBoundary */}
+    <Route path="posts" element={<BlogPage />} loader={blogLoader} errorElement={<ErrorPage />} />
     <Route path="posts/:id" element={<PostPage />} loader={postLoader} />
     <Route path="posts/new" element={
       <RequireAuth>
