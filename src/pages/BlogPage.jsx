@@ -52,9 +52,9 @@ const BlogPage = () => {
 }
 
 async function getPosts() {
-  // const res = await fetch('https://jsonplaceholder.typicode.com/posts')
-  //for error
-  const res = await fetch('https://jsonplaceholder.typicode.com/postssss')
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts')
+  // for error
+  // const res = await fetch('https://jsonplaceholder.typicode.com/postssss')
 
   //we can check errors like this
   // if (!res.ok) {
@@ -68,7 +68,10 @@ const blogLoader = async ({ request, params }) => {
   //and we can check errors like this
   const posts = getPosts()
 
-  if (!posts.length) {
+  console.log(posts,'posts');
+  
+
+  if (!posts) {
     throw json({
       message: 'Sorry, not found',
       reason: 'Wrong url'
